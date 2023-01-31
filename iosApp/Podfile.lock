@@ -1,0 +1,23 @@
+PODS:
+  - APodDemo2 (0.1.0)
+  - shared (1.0):
+    - APodDemo2 (= 0.1.0)
+
+DEPENDENCIES:
+  - shared (from `../shared`)
+
+SPEC REPOS:
+  trunk:
+    - APodDemo2
+
+EXTERNAL SOURCES:
+  shared:
+    :path: "../shared"
+
+SPEC CHECKSUMS:
+  APodDemo2: 142b7d86d9608ad869df5bd1bf2761611476a3b2
+  shared: f042749bf97e00e9926ad6ab1c2acb369b80dc47
+
+PODFILE CHECKSUM: 02ce056e56e0dfa863d8d6f50d2bda49a6bb703a
+
+COCOAPODS: 1.11.3

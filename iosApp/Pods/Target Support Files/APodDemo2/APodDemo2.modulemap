@@ -1,0 +1,6 @@
+framework module APodDemo2 {
+  umbrella header "APodDemo2-umbrella.h"
+
+  export *
+  module * { export * }
+}
