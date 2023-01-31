@@ -7,7 +7,22 @@ plugins {
 kotlin {
     android()
     iosX64()
-    iosArm64()
+    iosArm64 {
+        compilations.getByName("main") {
+            val IOTCamera by cinterops.creating {
+                // Path to .def file
+                defFile("src/nativeInterop/cinterop/IOTCamera.def")
+                compilerOpts("-framework", "IOTCamera", "-F${rootProject
+                    .projectDir}/shared/frameworks/")
+            }
+        }
+
+        binaries.all {
+            // Tell the linker where the framework is located.
+            linkerOpts("-framework", "IOTCamera", "-F${rootProject
+                .projectDir}/shared/frameworks/")
+        }
+    }
     iosSimulatorArm64()
 
     cocoapods {
