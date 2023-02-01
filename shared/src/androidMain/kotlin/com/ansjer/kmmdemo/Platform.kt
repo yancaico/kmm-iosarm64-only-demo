@@ -5,3 +5,7 @@ class AndroidPlatform : Platform {
 }
 
 actual fun getPlatform(): Platform = AndroidPlatform()
+
+actual fun getVersion(): String {
+    TODO("Not yet implemented")
+}
