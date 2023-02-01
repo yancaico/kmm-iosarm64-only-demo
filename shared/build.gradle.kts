@@ -29,11 +29,11 @@ kotlin {
         version = "1.0"
         ios.deploymentTarget = "14.1"
         podfile = project.file("../iosApp/Podfile")
+//        extraSpecAttributes.put("vendored_frameworks", "\"frameworks/IOTCamera.framework\"")
         framework {
             baseName = "shared"
-
         }
-        useLibraries()
+//        useLibraries()
     }
     
     sourceSets {
