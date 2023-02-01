@@ -3,7 +3,7 @@ import shared
 
 struct ContentView: View {
     
-    let greet = AnsjerOpen().getVersion()
+    let greet = Greeting().greet()
 
 	var body: some View {
 		Text(greet)

@@ -12,13 +12,13 @@ kotlin {
             val IOTCamera by cinterops.creating {
                 // Path to .def file
                 defFile("src/nativeInterop/cinterop/IOTCamera.def")
-                compilerOpts("-framework", "IOTCamera", "-F${rootProject.projectDir}/shared/frameworks/")
+                compilerOpts("-framework", "IOTCamera", "-F${projectDir}/frameworks/")
             }
         }
 
         binaries.all {
             // Tell the linker where the framework is located.
-            linkerOpts("-framework", "IOTCamera", "-F${rootProject.projectDir}/shared/frameworks/")
+            linkerOpts("-framework", "IOTCamera", "-F${projectDir}/frameworks/")
         }
     }
 //    iosSimulatorArm64()
