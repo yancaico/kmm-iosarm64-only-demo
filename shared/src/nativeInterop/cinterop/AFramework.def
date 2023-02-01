@@ -1,0 +1,3 @@
+language = Objective-C
+package = AFramework
+headers = /Users/ryan/workspace/documents/flutter/KMMDemo/shared/framework/AFramework.framework/Headers/AFramework.h
