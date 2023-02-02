@@ -1,0 +1,6 @@
+framework module AnsjerCamera {
+  umbrella header "AnsjerCamera.h"
+
+  export *
+  module * { export * }
+}

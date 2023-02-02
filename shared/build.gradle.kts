@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
+import org.jetbrains.kotlin.gradle.plugin.mpp.BitcodeEmbeddingMode
+
 plugins {
     kotlin("multiplatform")
     kotlin("native.cocoapods")
@@ -10,19 +13,27 @@ kotlin {
     android()
 //    iosX64()
     iosArm64 {
-        compilations.getByName("main") {
+        binaries {
+            framework {
+                baseName = "shared"
+                isStatic = false
+            }
+            all {
+                // Tell the linker where the framework is located.
+                linkerOpts("-framework", "AnsjerCamera", "-F${projectDir}/frameworks/","-framework", "IOTCamera", "-F${projectDir}/frameworks/")
+            }
+        }
+        compilations.getByName(KotlinCompilation.MAIN_COMPILATION_NAME) {
+            val AnsjerCamera by cinterops.creating {
+                // Path to .def file
+                defFile("src/nativeInterop/cinterop/AnsjerCamera.def")
+                compilerOpts("-framework", "AnsjerCamera", "-F${projectDir}/frameworks/")
+            }
             val IOTCamera by cinterops.creating {
                 // Path to .def file
                 defFile("src/nativeInterop/cinterop/IOTCamera.def")
-                compilerOpts("-framework", "IOTCamera", "-F${rootProject
-                    .projectDir}/shared/frameworks/")
+                compilerOpts("-framework", "IOTCamera", "-F${projectDir}/frameworks/")
             }
-        }
-
-        binaries.all {
-            // Tell the linker where the framework is located.
-            linkerOpts("-framework", "IOTCamera", "-F${rootProject
-                .projectDir}/shared/frameworks/")
         }
     }
 //    iosSimulatorArm64()
@@ -34,8 +45,12 @@ kotlin {
         ios.deploymentTarget = "10.0"
         podfile = project.file("../iosApp/Podfile")
         framework {
+            isStatic = false
             baseName = "shared"
+            embedBitcode(BitcodeEmbeddingMode.DISABLE)
         }
+        extraSpecAttributes.put("vendored_frameworks", "'build/cocoapods/framework/shared" +
+                ".framework','frameworks/AnsjerCamera.framework','frameworks/IOTCamera.framework'")
 //        pod("APodDemo2") {
 //            version = "0.1.0"
 ////            source = git("https://github.com/yancaico/APodDemo.git") {
@@ -45,11 +60,11 @@ kotlin {
 //        pod("tutk_camera") {
 //            version = "1.3.6"
 //        }
-        pod("APodDemo2") {
-            version = "0.1.0"
-//            source = path(project.file("../APodDemo"))
-        }
-        useLibraries()
+//        pod("APodDemo2") {
+//            version = "0.1.0"
+////            source = path(project.file("../APodDemo"))
+//        }
+//        useLibraries()
     }
 
     val coroutinesVersion = "1.6.4"
@@ -70,6 +85,8 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
+                implementation(kotlin("test-common"))
+                implementation(kotlin("test-annotations-common"))
             }
         }
         val androidMain by getting {
@@ -80,20 +97,29 @@ kotlin {
         }
         val androidTest by getting
 //        val iosX64Main by getting
-        val iosArm64Main by getting
-//        val iosSimulatorArm64Main by getting
-        val iosMain by creating {
+        val iosArm64Main by getting {
+            kotlin.srcDir("src/iosMain/kotlin")
             dependsOn(commonMain)
             dependencies {
                 implementation("io.ktor:ktor-client-darwin:$ktorVersion")
                 implementation("com.squareup.sqldelight:native-driver:$sqlDelightVersion")
             }
-//            iosX64Main.dependsOn(this)
-            iosArm64Main.dependsOn(this)
-//            iosSimulatorArm64Main.dependsOn(this)
         }
+//        val iosSimulatorArm64Main by getting
+//        val iosMain by creating {
+//            dependsOn(commonMain)
+//            dependencies {
+//                implementation("io.ktor:ktor-client-darwin:$ktorVersion")
+//                implementation("com.squareup.sqldelight:native-driver:$sqlDelightVersion")
+//            }
+//            iosX64Main.dependsOn(this)
+//            iosArm64Main.dependsOn(this)
+//            iosSimulatorArm64Main.dependsOn(this)
+//        }
 //        val iosX64Test by getting
-        val iosArm64Test by getting
+        val iosArm64Test by getting {
+            dependsOn(commonTest)
+        }
 //        val iosSimulatorArm64Test by getting
         val iosTest by creating {
             dependsOn(commonTest)
